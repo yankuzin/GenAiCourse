@@ -3,9 +3,6 @@ load_dotenv()
 
 from langchain_openai import OpenAI
 import streamlit as st
-import os
-
-MODEL = os.getenv("MODEL")
 
 from agent import agent
 
@@ -15,12 +12,10 @@ st.set_page_config(
     layout="centered"
 )
 
+# Sidebar with business information
 with st.sidebar:
     st.header("App overview")
-    st.markdown("""
-        This app is a Retrieval-Augmented Generation (RAG) chat assistant that leverages a FAISS vector store 
-        for context retrieval and integrates with GitHub Issues to file support tickets when necessary.
-                """)
+
     st.divider()
 
 if "messages" not in st.session_state:
@@ -29,8 +24,8 @@ if "messages" not in st.session_state:
     ]
 
 st.sidebar.title("⚙️ Settings")
-st.sidebar.markdown(f"Using internal model: **{MODEL or 'not set'}**")
 
+# Main chat interface
 st.title("🤖 RAG Chat Assistant")
 st.caption("🤖 Ask me anything about knowledge base I am trained on")
 
@@ -43,34 +38,23 @@ if prompt := st.chat_input("Type your message..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # Show assistant reply with container to avoid "ghost" messages
     with st.chat_message("assistant"):
         with st.container():
             with st.spinner("Thinking..."):
+                    # Pass the full message history to the agent
                     result = agent.invoke({"messages": st.session_state.messages})
 
+                    # If result is a list of messages, get the last AI message's content
                     if hasattr(result, "content"):
                         reply = result.content
                     elif isinstance(result, dict) and "messages" in result:
+                        # Defensive: get last AI message from the list
                         ai_msgs = [m for m in result["messages"] if getattr(m, "type", None) == "ai"]
                         reply = ai_msgs[-1].content if ai_msgs else str(result)
-            
-                        for m in reversed(result["messages"]):
-                            artifact = getattr(m, "artifact", None)
-                            if artifact:
-                                if isinstance(artifact, list) and all(isinstance(a, str) for a in artifact):
-                                    reply += "\n\n**Sources:**\n" + "\n".join(artifact)
-                                elif isinstance(artifact, list):
-                                    sources = []
-                                    for doc in artifact:
-                                        meta = getattr(doc, "metadata", {})
-                                        src = meta.get("source", "unknown")
-                                        page = meta.get("page", "unknown")
-                                        sources.append(f"Source: {src}, Page: {page}")
-                                    if sources:
-                                        reply += "\n\n**Sources:**\n" + "\n".join(sources)
-                                break
                     else:
                         reply = str(result)
 
             st.markdown(reply)
+                # Append to chat history *after* rendering to avoid flicker/duplication
             st.session_state.messages.append({"role": "assistant", "content": reply})

@@ -39,7 +39,7 @@ def github_support_ticket(query: str, email: str = None):
        Requires user's email for follow-up.
     """
     github_token = os.getenv("GITHUB_TOKEN")
-    repo = os.getenv("REPO")  # e.g., "username/repo"
+    repo = os.getenv("REPO")  
     if not email:
         return "Please provide your email address to file a support ticket."
     url = f"https://api.github.com/repos/{repo}/issues"
@@ -69,6 +69,7 @@ prompt = (
     "If you cannot find the answer in the context, tell that you don't know and use the GitHub support ticket tool"
     "If the user requests to file a support ticket, ask for their email address if it is not provided. "
     "Once the user provides their email, file the ticket and confirm."
+    "When asked question about the company inform that the company name is Yan Capstone project, phone number +123123"
 )
 
 agent = create_agent(model, tools, system_prompt=prompt)
