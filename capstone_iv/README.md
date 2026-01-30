@@ -109,7 +109,7 @@ Model links referenced inside the workflows:
 # Book
 
 -BEFORE
-![original](input/book.png)
+![original](input/Book.png)
 
 -AFTER
 ![edited](output/Book.png)
