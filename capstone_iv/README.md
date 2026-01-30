@@ -118,8 +118,8 @@ Model links referenced inside the workflows:
 
 -BEFORE
 
-![original](/input/Marty_Supreme_poster.png)
+![original](input/Marty_Supreme_poster.png)
 
 -AFTER
 
-![edited](/output/Movie.png)
+![edited](output/Movie.png)
