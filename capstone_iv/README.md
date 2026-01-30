@@ -101,18 +101,18 @@ Model links referenced inside the workflows:
 # Music Band Album
 
 -BEFORE
-![original](/input/am.png)
+![original](input/am.png)
 
 -AFTER
-![edited](/output/CD.png)
+![edited](output/CD.png)
 
 # Book
 
 -BEFORE
-![original](/input/book.png)
+![original](input/book.png)
 
 -AFTER
-![edited](/output/Book.png)
+![edited](output/Book.png)
 
 # Movie
 
